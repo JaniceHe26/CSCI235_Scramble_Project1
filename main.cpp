@@ -1,16 +1,14 @@
-#include <fstream>
-#include <iostream>
 #include "Game.h"
 
 using namespace std;
 
-ofstream txtfile;
-
-
-int main() {
+int main(int argc, char **argv) {
+    srand(time(0));
     Game scramble = Game();
 
-    scramble.start();
+    if (argc > 1) {
+        scramble.run(argv[1]);
+    }
 
    return 0;
 }

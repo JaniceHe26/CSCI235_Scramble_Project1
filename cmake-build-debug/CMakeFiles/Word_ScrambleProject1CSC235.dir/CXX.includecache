@@ -7,20 +7,24 @@
 #IncludeRegexTransform: 
 
 /Users/Aikeiti/CLionProjects/Word_ScrambleProject1CSC235/Game.cpp
+Game.h
+/Users/Aikeiti/CLionProjects/Word_ScrambleProject1CSC235/Game.h
+
+/Users/Aikeiti/CLionProjects/Word_ScrambleProject1CSC235/Game.h
 iostream
+-
+map
 -
 Game.h
 /Users/Aikeiti/CLionProjects/Word_ScrambleProject1CSC235/Game.h
 fstream
 -
-
-/Users/Aikeiti/CLionProjects/Word_ScrambleProject1CSC235/Game.h
+string
+-
+vector
+-
 
 /Users/Aikeiti/CLionProjects/Word_ScrambleProject1CSC235/main.cpp
-fstream
--
-iostream
--
 Game.h
 /Users/Aikeiti/CLionProjects/Word_ScrambleProject1CSC235/Game.h
 

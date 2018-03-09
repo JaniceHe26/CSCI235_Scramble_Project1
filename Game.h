@@ -5,13 +5,20 @@
 #ifndef WORD_SCRAMBLEPROJECT1CSC235_GAME_H
 #define WORD_SCRAMBLEPROJECT1CSC235_GAME_H
 
-
+#include <iostream>
+#include <map>
+#include "Game.h"
+#include <fstream>
+#include <string>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
+
 
 class Game {
 public:
-    void start(); //To start a game.
-//    void printHello(); //Testing References
+    void run(string filePath); //To start a game. User interaction will happen here
 //    string getWord(); //Random word from text file.
 
 
@@ -21,11 +28,17 @@ private:
 //    int playersNumGuess = 0;
 //    string word = ""; //Word user will enter....should this be private?
 //    bool lifeLine = true;
+    void level(int playerLvl);
+
     bool gameRunning = false;
-//    vector <vector <string> > wordStore;
-//    string filePath();
-//    int livesRemaining = 3;
+    map <int, vector<string> > library;
     bool getLibrary(string filePath);
+    void storeWord(string word);
+    string getWord(int length);
+    string jumble(string word);
+    string correctWord(int score); // keeps the correct word saved.
+    void saveGame();
+
 //    void useLifeLine(); //extra life if player wish to use, using bool because if lifeline is activated (so thinking t it will activates)
 
 
