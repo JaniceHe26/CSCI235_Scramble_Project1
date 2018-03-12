@@ -31,6 +31,8 @@ private:
     string jumble(string word);
     void saveGame();
     string wordConformance(string word);
+    //function catchUp
+    //function getLevel getWord...
 
 
 

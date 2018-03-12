@@ -95,6 +95,10 @@ void Game::run(string filePath) { //
         } else {
             cout << "Incorrect!" << endl;
             numGuessRem--;
+            //Fix this case into like filepath. (Dont let them enter something other wise)
+            while(response != ("y" || "Y" || "n" || "N")){
+                cout << "Invalid Entry! Please enter either Y for using a lifeline or N for not using a life line." <<endl;
+            }
             if (numGuessRem == 0 && lifeLineRem > 0) {
                 cout << "You ran out of chances to guess for this word." << endl; //Would you like to use lifeline?
                 cout << "Would you like to use a life line?\t" "'Y' for Yes and 'N' for No"<<endl;
