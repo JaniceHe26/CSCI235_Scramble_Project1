@@ -33,6 +33,7 @@ private:
     string wordConformance(string word);
     //function catchUp
     //function getLevel getWord...
+    void saveFile(string savedfilePath);
 
 
 

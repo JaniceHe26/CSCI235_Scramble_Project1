@@ -96,26 +96,28 @@ void Game::run(string filePath) { //
             cout << "Incorrect!" << endl;
             numGuessRem--;
             //Fix this case into like filepath. (Dont let them enter something other wise)
-            while(response != ("y" || "Y" || "n" || "N")){
-                cout << "Invalid Entry! Please enter either Y for using a lifeline or N for not using a life line." <<endl;
-            }
-            if (numGuessRem == 0 && lifeLineRem > 0) {
-                cout << "You ran out of chances to guess for this word." << endl; //Would you like to use lifeline?
-                cout << "Would you like to use a life line?\t" "'Y' for Yes and 'N' for No"<<endl;
-                cin >> response;
-                if(response == 'Y' && lifeLineRem > 0){
-                    lifeLineRem = lifeLineRem - 1;
-                }
-                else if (response == 'N' && lifeLineRem > 0){
-                    cout << "You chose to not use a life line. You lost." <<endl;
-                    //Game is over*******************************
-                }
-                if(response == 'Y' && lifeLineRem == 0){
-                    cout<< "Sorry you do not have any life line left. You lost." <<endl;
-                    //Game is over*******************************
+                if (numGuessRem == 0 && lifeLineRem > 0) {
+                    cout << "You ran out of chances to guess for this word." << endl; //Would you like to use lifeline?
+                    cout << "Would you like to use a life line?\t" "'Y or y' for Yes and 'N or y' for No" << endl;
+                    cin >> response;
+                    while (response != ("y" || "Y" || "n" || "N")) {
+                        cout
+                                << "Invalid Entry! Please enter either Y or y for using a lifeline or N or n for not using a life line." << endl;
+                                cin >> response;
+                        if(response == 'Y' && lifeLineRem > 0) {
+                            lifeLineRem = lifeLineRem - 1;
+                        } else if (response == 'N' && lifeLineRem > 0) {
+                            cout << "You chose to not use a life line. You lost." << endl;
+                            //Game is over*******************************
+                        }
+                        if (response == 'Y' && lifeLineRem == 0) {
+                            cout << "Sorry you do not have any life line left. You lost." << endl;
+                            //Game is over*******************************
+                        }
+                    }
                 }
 
-            }
+
 
 
         }
@@ -203,4 +205,5 @@ string Game::jumble(string word) {
     return word;
 }
 
+void Game::saveFile(string savedfilePath);
 
