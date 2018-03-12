@@ -29,6 +29,8 @@ cstdlib
 -
 ctime
 -
+algorithm
+-
 
 /Users/Aikeiti/CLionProjects/Word_ScrambleProject1CSC235/main.cpp
 Game.h

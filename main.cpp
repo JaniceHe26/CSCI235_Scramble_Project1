@@ -8,6 +8,8 @@ int main(int argc, char **argv) {
 
     if (argc > 1) {
         scramble.run(argv[1]);
+    } else {
+        scramble.run("temp path");
     }
 
    return 0;
