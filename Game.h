@@ -29,18 +29,8 @@ private:
     bool createLibrary(string filePath);
     string getWord(int length);
     string jumble(string word);
-    void saveGame();
     string wordConformance(string word);
-    //function catchUp
-    //function getLevel getWord...
-    void saveFile(string savedfilePath);
-
-
-
-//    void useLifeLine(); //extra life if player wish to use, using bool because if lifeline is activated (so thinking t it will activates)
-
-
-
+    void saveFile(string Game);
 
 
 };

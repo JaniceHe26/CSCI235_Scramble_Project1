@@ -44,24 +44,21 @@ void Game::run(string filePath) { //
     string jumbledWord = jumble(currentWord);
     string guessedWord; //a word user will enter
     int stage = 1;
-    char response;
 
-
+    //check if there is a saved game.
 
     while (gameRunning) {
 
         cout << "\n\n";
         cout << "WORD JUMBLE BEGIN:" << endl;
-        cout
-                << "---------------------------------------------------------------------------------------------------------"
-                << endl;
+        cout << "------------------------------------------------------------------------------------------------------"
+             << endl;
         cout << "Level:\t" << level << endl;//(put in keeping track of level function here)
         cout << "Stage:\t(" << stage << "/3)" << endl;
         cout << "Score:\t" << score << endl;//(put in keeping track of score function here)
         cout << "LifeLine Remaining:\t" << lifeLineRem << endl;//(Lifeline remaining function inside here)
-        cout
-                << "---------------------------------------------------------------------------------------------------------"
-                << endl;
+        cout << "------------------------------------------------------------------------------------------------------"
+             << endl;
         cout << "\n\n";
         cout << "Number of guesses remaining:\t" << numGuessRem << endl; //NumberofTries in here
         cout << "Your word to unscramble:\t" << jumbledWord << endl;//put in the displayWord function here //cin>>
@@ -96,30 +93,38 @@ void Game::run(string filePath) { //
             cout << "Incorrect!" << endl;
             numGuessRem--;
             //Fix this case into like filepath. (Dont let them enter something other wise)
-                if (numGuessRem == 0 && lifeLineRem > 0) {
-                    cout << "You ran out of chances to guess for this word." << endl; //Would you like to use lifeline?
-                    cout << "Would you like to use a life line?\t" "'Y or y' for Yes and 'N or y' for No" << endl;
+            if (numGuessRem == 0) {
+                if (lifeLineRem > 0) {
+                    string response;
+                    cout << "You ran out of chances to guess for this word. If you do not use a lifeline you will lose."
+                         << endl; //Would you like to use lifeline?
+                    cout << "Would you like to use a life line?\t" "'Y' or 'y' for Yes and 'N' or 'n' for No" << endl;
                     cin >> response;
-                    while (response != ("y" || "Y" || "n" || "N")) {
-                        cout
-                                << "Invalid Entry! Please enter either Y or y for using a lifeline or N or n for not using a life line." << endl;
-                                cin >> response;
-                        if(response == 'Y' && lifeLineRem > 0) {
-                            lifeLineRem = lifeLineRem - 1;
-                        } else if (response == 'N' && lifeLineRem > 0) {
-                            cout << "You chose to not use a life line. You lost." << endl;
-                            //Game is over*******************************
-                        }
-                        if (response == 'Y' && lifeLineRem == 0) {
-                            cout << "Sorry you do not have any life line left. You lost." << endl;
-                            //Game is over*******************************
-                        }
+                    while (!(response == "y" || response == "Y" ||
+                             response == "n" || response == "N")) {
+                        cout << "Invalid Entry! Please enter either Y or y "
+                             << "for using a lifeline or N or n for not using a life line."
+                             << endl;
+                        cin >> response;
                     }
+
+                    if (response == "Y" || response == "y") {
+                        lifeLineRem--;
+                        numGuessRem = 3;
+                        currentWord = getWord(currentLength);
+                        jumbledWord = jumble(currentWord);
+                    } else if (response == "N" || response == "n") {
+                        cout << "You chose to not use a life line. You lost." << endl;
+                        gameRunning = false;
+                        //Game is over*******************************
+                    }
+                } else {
+                    cout << "Sorry you do not have any life line left. You lost."
+                         << endl; //maybe put this in the first statement
+                    gameRunning = false;
+                    //Game is over*******************************
                 }
-
-
-
-
+            }
         }
 
         cout << "\n\n";
@@ -130,19 +135,18 @@ void Game::run(string filePath) { //
 }
 
 
-
 //This function will read file. Using a while loop just print out what is being read.
-bool Game::createLibrary(string filePath){
+bool Game::createLibrary(string filePath) {
     ifstream file;
-    try{
+    try {
         file.open(filePath);
-        while(!file.eof()){
+        while (!file.eof()) {
             string word;
             file >> word;
             word = wordConformance(word);
             storeWord(word);
         }
-    } catch (const ifstream::failure& e) {
+    } catch (const ifstream::failure &e) {
         return false;
     }
 
@@ -162,13 +166,14 @@ string Game::wordConformance(string word) {
 }
 
 //This Function will store the word from file into a map of length and word. Also, check to see if word is existing.
-void Game::storeWord(string word){ //worry about length unique .use library
+void Game::storeWord(string word) { //worry about length unique .use library
     auto length = (int) word.length(); //this will give length of the word by calling a function called length on <string>
-    if(length > maxLength){
+    if (length > maxLength) {
         maxLength = length;
     }
-    if(library.count(length) == 1){ //If key exist
-        if (find(library[length].begin(), library[length].end(), word) == library[length].end()){ //Look through the element of vector
+    if (library.count(length) == 1) { //If key exist
+        if (find(library[length].begin(), library[length].end(), word) ==
+            library[length].end()) { //Look through the element of vector
             library[length].push_back(word); //then add word
         }
     } else { //If length and word does not exist, create a new vector.
@@ -183,7 +188,7 @@ void Game::storeWord(string word){ //worry about length unique .use library
 string Game::getWord(int length) {
 //    return library[length][rand()%library[length].size()]; //Generate random number from the size of the vector
     //rotating vector's value
-    if(library.count(length) == 1){
+    if (library.count(length) == 1) {
         string tempVect = library[length][0];
         library[length].erase(library[length].begin());
         library[length].push_back(tempVect);
@@ -194,16 +199,32 @@ string Game::getWord(int length) {
 
 
 string Game::jumble(string word) {
-    for(int i = 0; i < 1000; i++) {
-        int storeNum = rand()%word.size();
-        int storeNum1 = rand()%word.size();
+    for (int i = 0; i < 1000; i++) {
+        int storeNum = rand() % word.size();
+        int storeNum1 = rand() % word.size();
         char letter = word[storeNum];
-        char letter1= word[storeNum1];
+        char letter1 = word[storeNum1];
         word[storeNum] = letter1;
         word[storeNum1] = letter;
     }
     return word;
 }
 
-void Game::saveFile(string savedfilePath);
+void Game::saveFile(string Game) {
+    string saveGame;
+    cout << "Would you like to save the fucking game? (y/n)" << endl;
+    cin >> saveGame;
+    while (!(saveGame == "y" || saveGame == "Y" ||
+             saveGame == "n" || saveGame == "N")) {
+        cout << "Invalid Entry" << endl;
+        cin >> saveGame;
+    }
+    if (saveGame == "save") {//add in something that will save automatically if user quit.
+        getline(cin, saveGame);
+        ofstream filePath("Save.txt");
+        filePath << saveGame;
+        filePath.close();
+    }
+}
+
 
