@@ -30,8 +30,8 @@ private:
     string getWord(int length);
     string jumble(string word);
     string wordConformance(string word);
-    void saveFile(string Game);
-
+//    void saveFile(string Game);
+    void saveGame(int level, int score, int lifelineRem, int currentLength, string currentWord, string jumbledWord, int stage, int numWordCorrect, string longestWord);
 
 };
 

@@ -11,7 +11,6 @@ using namespace std;
 //Precondition: User must enter a correct file path as well file cannot be empty and have the right amount of word.
 void Game::run(string filePath) { //
     gameRunning = true;
-
     bool fileExist = createLibrary(filePath);
     while (!fileExist) {  //While loop will keep going until user enter a correct file.
         cout << "File does not exist. Please enter a new file path: ";
@@ -32,9 +31,6 @@ void Game::run(string filePath) { //
 
 
 //UI ish of the program:
-
-//    int currentLevel = 0;
-//    int maxLevel = currentLevel;
     int level = 1;
     int score = 0;
     int lifeLineRem = 5;
@@ -44,16 +40,20 @@ void Game::run(string filePath) { //
     string jumbledWord = jumble(currentWord);
     string guessedWord; //a word user will enter
     int stage = 1;
-
+// This variables will help us with saving game:
+    int maxLevel;
+    int numWordCorrect = 0;
+    string longestWord;
     //check if there is a saved game.
 
     while (gameRunning) {
+        saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord, stage, numWordCorrect, longestWord);
 
         cout << "\n\n";
         cout << "WORD JUMBLE BEGIN:" << endl;
         cout << "------------------------------------------------------------------------------------------------------"
              << endl;
-        cout << "Level:\t" << level << endl;//(put in keeping track of level function here)
+        cout << "Current Level:\t" << level << endl;//(put in keeping track of level function here)
         cout << "Stage:\t(" << stage << "/3)" << endl;
         cout << "Score:\t" << score << endl;//(put in keeping track of score function here)
         cout << "LifeLine Remaining:\t" << lifeLineRem << endl;//(Lifeline remaining function inside here)
@@ -68,20 +68,23 @@ void Game::run(string filePath) { //
 
         if (currentWord == guessedWord) {
             cout << "Correct!" << endl;
+            cout << "\n\n";
+            numWordCorrect++;
+            longestWord = currentWord;
             stage++;
-            if (stage > 3) {
+            if (stage > 3) { //Go on to next stage
                 stage = 1;
+                if(currentLength == maxLength){ //last update to final print of status.
+                    maxLevel = level;
+                    score = score +15;
+                    break;
+
+                }
                 level++;
                 score = score + 10;
                 currentLength++;
-//                if(currentLength > maxLength){
-//                    //game is over******************************
-//                    //******************************************
-//                    //******************************************
-//                    //******************************************
-//                }
                 while (library.count(currentLength) == 0 && currentLength <= maxLength) {
-                    currentLength++;
+                    currentLength++; //Keep going on until it reach to the max key
                 }
             }
             score = score + 5;
@@ -128,10 +131,18 @@ void Game::run(string filePath) { //
         }
 
         cout << "\n\n";
-
-
     }
-//        cout<<"Game is over."<<endl;
+
+    cout << "STATUS:\t" << endl;
+    cout << "------------------------------------------------------------------------------------------------------"
+         << endl;
+    cout << "Max Level Reached:\t" << maxLevel << endl;
+    cout << "Number of Word Guessed:\t" << numWordCorrect <<endl;
+    cout << "Highest Level:\t" << level <<endl;
+    cout << "Longest Word Guessed:\t" << longestWord <<endl;
+    cout << "------------------------------------------------------------------------------------------------------"
+         << endl;
+    cout<<"Game is over."<<endl;
 }
 
 
@@ -206,25 +217,52 @@ string Game::jumble(string word) {
         char letter1 = word[storeNum1];
         word[storeNum] = letter1;
         word[storeNum1] = letter;
-    }
+    } //need a while saying if jumble word is same rejumble
     return word;
 }
 
-void Game::saveFile(string Game) {
-    string saveGame;
-    cout << "Would you like to save the fucking game? (y/n)" << endl;
-    cin >> saveGame;
-    while (!(saveGame == "y" || saveGame == "Y" ||
-             saveGame == "n" || saveGame == "N")) {
-        cout << "Invalid Entry" << endl;
-        cin >> saveGame;
-    }
-    if (saveGame == "save") {//add in something that will save automatically if user quit.
-        getline(cin, saveGame);
-        ofstream filePath("Save.txt");
-        filePath << saveGame;
-        filePath.close();
-    }
+void Game::saveGame(int level, int score, int lifelineRem, int currentLength, string currentWord, string jumbledWord,
+                    int stage, int numWordCorrect, string longestWord) {
+    ofstream gamefile;
+    gamefile.open("Save.txt");
+    gamefile << level << " " << score << " "<< lifelineRem << " " << currentLength << " " << currentWord << " " << jumbledWord;
+          cout << " " << stage << " " << numWordCorrect << " " << longestWord;
+    gamefile.close();
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void Game::saveFile(string Game) {
+//    string saveGame;
+//    cout << "Would you like to save the fucking game? (y/n)" << endl;
+//    cin >> saveGame;
+//    while (!(saveGame == "y" || saveGame == "Y" ||
+//             saveGame == "n" || saveGame == "N")) {
+//        cout << "Invalid Entry" << endl;
+//        cin >> saveGame;
+//    }
+//    if (saveGame == "save") {//add in something that will save automatically if user quit.
+//        getline(cin, saveGame);
+//        ofstream filePath("Save.txt");
+//        filePath << saveGame;
+//        filePath.close();
+//    }
+//}
 
 
