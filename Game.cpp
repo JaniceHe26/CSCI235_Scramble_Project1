@@ -11,12 +11,19 @@ using namespace std;
 //Precondition: User must enter a correct file path as well file cannot be empty and have the right amount of word.
 void Game::run(string filePath) { //
     gameRunning = true;
-    bool fileExist = createLibrary(filePath);
-    while (!fileExist) {  //While loop will keep going until user enter a correct file.
-        cout << "File does not exist. Please enter a new file path: ";
-        cin >> filePath;
+    vector<string> loadGameValues;
+    bool fileExist = false;
+    if (filePath.empty()) {
+        loadGameValues = loadGame();
+    } else {
         fileExist = createLibrary(filePath);
+        while (!fileExist) {  //While loop will keep going until user enter a correct file.
+            cout << "File does not exist. Please enter a new file path: ";
+            cin >> filePath;
+            fileExist = createLibrary(filePath);
+        }
     }
+
 //Postcondition:
 
 
@@ -36,8 +43,8 @@ void Game::run(string filePath) { //
     int lifeLineRem = 5;
     int numGuessRem = 3;
     int currentLength = 3;
-    string currentWord = getWord(currentLength);
-    string jumbledWord = jumble(currentWord);
+    string currentWord;
+    string jumbledWord;
     string guessedWord; //a word user will enter
     int stage = 1;
 // This variables will help us with saving game:
@@ -45,9 +52,29 @@ void Game::run(string filePath) { //
     int numWordCorrect = 0;
     string longestWord;
     //check if there is a saved game.
+    if (loadGameValues.size() == 10) {
+        level = stoi(loadGameValues[0]);
+        score = stoi(loadGameValues[1]);
+        lifeLineRem = stoi(loadGameValues[2]);
+        currentLength = stoi(loadGameValues[3]);
+        currentWord = loadGameValues[4];
+        jumbledWord = loadGameValues[5];
+        stage = stoi(loadGameValues[6]);
+        numWordCorrect = stoi(loadGameValues[7]);
+        longestWord = loadGameValues[8];
+        filePath = loadGameValues[9];
+        fileExist = createLibrary(filePath);
+        if (!fileExist) {
+            cout << "\nSaved library failed to load.\n";
+            return;
+        }
+        while (getWord(currentLength) != currentWord);
+    } else {
+        currentWord = getWord(currentLength);
+        jumbledWord = jumble(currentWord);
+    }
 
     while (gameRunning) {
-        saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord, stage, numWordCorrect, longestWord);
 
         cout << "\n\n";
         cout << "WORD JUMBLE BEGIN:" << endl;
@@ -72,6 +99,7 @@ void Game::run(string filePath) { //
             numWordCorrect++;
             longestWord = currentWord;
             stage++;
+
             if (stage > 3) { //Go on to next stage
                 stage = 1;
                 if(currentLength == maxLength){ //last update to final print of status.
@@ -91,10 +119,13 @@ void Game::run(string filePath) { //
             currentWord = getWord(currentLength);
             jumbledWord = jumble(currentWord);
             numGuessRem = 3;
+            saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord, stage, numWordCorrect, longestWord, filePath);
 
         } else {
             cout << "Incorrect!" << endl;
+
             numGuessRem--;
+
             //Fix this case into like filepath. (Dont let them enter something other wise)
             if (numGuessRem == 0) {
                 if (lifeLineRem > 0) {
@@ -128,6 +159,7 @@ void Game::run(string filePath) { //
                     //Game is over*******************************
                 }
             }
+            saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord, stage, numWordCorrect, longestWord, filePath);
         }
 
         cout << "\n\n";
@@ -151,11 +183,17 @@ bool Game::createLibrary(string filePath) {
     ifstream file;
     try {
         file.open(filePath);
-        while (!file.eof()) {
-            string word;
-            file >> word;
-            word = wordConformance(word);
-            storeWord(word);
+        if (file.good()) {
+            while (!file.eof()) {//while its running till the end for every word in the file it pulls it in give it to the string
+//then conform it and store it into a storeWord
+                string word;
+                file >> word;
+                word = wordConformance(word);
+                storeWord(word);
+            }
+            file.close();
+        } else {
+            return false;
         }
     } catch (const ifstream::failure &e) {
         return false;
@@ -222,47 +260,42 @@ string Game::jumble(string word) {
 }
 
 void Game::saveGame(int level, int score, int lifelineRem, int currentLength, string currentWord, string jumbledWord,
-                    int stage, int numWordCorrect, string longestWord) {
+                    int stage, int numWordCorrect, string longestWord, string filePath) {
     ofstream gamefile;
     gamefile.open("Save.txt");
-    gamefile << level << " " << score << " "<< lifelineRem << " " << currentLength << " " << currentWord << " " << jumbledWord;
-          cout << " " << stage << " " << numWordCorrect << " " << longestWord;
+    gamefile << level << " "
+             << score << " "
+             << lifelineRem << " "
+             << currentLength << " "
+             << currentWord << " "
+             << jumbledWord << " "
+             << stage << " "
+             << numWordCorrect << " "
+             << longestWord << " "
+             << filePath;
+
     gamefile.close();
 
 }
 
+vector<string> Game::loadGame() {
+    ifstream load;
+    vector<string> temp;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//void Game::saveFile(string Game) {
-//    string saveGame;
-//    cout << "Would you like to save the fucking game? (y/n)" << endl;
-//    cin >> saveGame;
-//    while (!(saveGame == "y" || saveGame == "Y" ||
-//             saveGame == "n" || saveGame == "N")) {
-//        cout << "Invalid Entry" << endl;
-//        cin >> saveGame;
-//    }
-//    if (saveGame == "save") {//add in something that will save automatically if user quit.
-//        getline(cin, saveGame);
-//        ofstream filePath("Save.txt");
-//        filePath << saveGame;
-//        filePath.close();
-//    }
-//}
-
+    try { //opening a file might break and catches it.
+        load.open("Save.txt"); //if file exist then some sort of game is saved in it.
+        if (load.good()) {
+            for (int i = 0; i < 10; i++) {
+                string tempVal;
+                load >> tempVal;
+                temp.push_back(tempVal);
+            }
+            return temp;
+        } else {
+            return vector<string>();
+        }
+    } catch(const ifstream::failure &e) {
+        return vector<string>();
+    }
+}
 

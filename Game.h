@@ -22,6 +22,7 @@ public:
     void run(string filePath); //To start a game. User interaction will happen here
     void storeWord(string word);
 
+
 private:
     bool gameRunning = false;
     int maxLength = 0;
@@ -30,9 +31,10 @@ private:
     string getWord(int length);
     string jumble(string word);
     string wordConformance(string word);
-//    void saveFile(string Game);
-    void saveGame(int level, int score, int lifelineRem, int currentLength, string currentWord, string jumbledWord, int stage, int numWordCorrect, string longestWord);
-
+//    void saveFile(string Game); //make this to load file instead of save
+    void saveGame(int level, int score, int lifelineRem, int currentLength, string currentWord, string jumbledWord,
+                  int stage, int numWordCorrect, string longestWord, string filePath);
+    vector<string> loadGame();
 };
 
 
