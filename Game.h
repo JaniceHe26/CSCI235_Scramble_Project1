@@ -33,7 +33,7 @@ private:
     string wordConformance(string word);
 //    void saveFile(string Game); //make this to load file instead of save
     void saveGame(int level, int score, int lifelineRem, int currentLength, string currentWord, string jumbledWord,
-                  int stage, int numWordCorrect, string longestWord, string filePath);
+                  int stage, int guessRem, int numWordCorrect, string longestWord, string filePath);
     vector<string> loadGame();
 };
 

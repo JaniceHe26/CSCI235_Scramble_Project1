@@ -52,7 +52,7 @@ void Game::run(string filePath) { //
     int numWordCorrect = 0;
     string longestWord;
     //check if there is a saved game.
-    if (loadGameValues.size() == 10) {
+    if (loadGameValues.size() == 11) {
         level = stoi(loadGameValues[0]);
         score = stoi(loadGameValues[1]);
         lifeLineRem = stoi(loadGameValues[2]);
@@ -60,9 +60,10 @@ void Game::run(string filePath) { //
         currentWord = loadGameValues[4];
         jumbledWord = loadGameValues[5];
         stage = stoi(loadGameValues[6]);
-        numWordCorrect = stoi(loadGameValues[7]);
-        longestWord = loadGameValues[8];
-        filePath = loadGameValues[9];
+        numGuessRem = stoi(loadGameValues[7]);
+        numWordCorrect = stoi(loadGameValues[8]);
+        longestWord = loadGameValues[9];
+        filePath = loadGameValues[10];
         fileExist = createLibrary(filePath);
         if (!fileExist) {
             cout << "\nSaved library failed to load.\n";
@@ -119,7 +120,7 @@ void Game::run(string filePath) { //
             currentWord = getWord(currentLength);
             jumbledWord = jumble(currentWord);
             numGuessRem = 3;
-            saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord, stage, numWordCorrect, longestWord, filePath);
+            saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord, stage, numGuessRem, numWordCorrect, longestWord, filePath);
 
         } else {
             cout << "Incorrect!" << endl;
@@ -159,7 +160,7 @@ void Game::run(string filePath) { //
                     //Game is over*******************************
                 }
             }
-            saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord, stage, numWordCorrect, longestWord, filePath);
+            saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord, stage, numGuessRem, numWordCorrect, longestWord, filePath);
         }
 
         cout << "\n\n";
@@ -260,7 +261,7 @@ string Game::jumble(string word) {
 }
 
 void Game::saveGame(int level, int score, int lifelineRem, int currentLength, string currentWord, string jumbledWord,
-                    int stage, int numWordCorrect, string longestWord, string filePath) {
+                    int stage, int guessRem, int numWordCorrect, string longestWord, string filePath) {
     ofstream gamefile;
     gamefile.open("Save.txt");
     gamefile << level << " "
@@ -270,6 +271,7 @@ void Game::saveGame(int level, int score, int lifelineRem, int currentLength, st
              << currentWord << " "
              << jumbledWord << " "
              << stage << " "
+             << guessRem << " "
              << numWordCorrect << " "
              << longestWord << " "
              << filePath;
@@ -285,7 +287,7 @@ vector<string> Game::loadGame() {
     try { //opening a file might break and catches it.
         load.open("Save.txt"); //if file exist then some sort of game is saved in it.
         if (load.good()) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 11; i++) {
                 string tempVal;
                 load >> tempVal;
                 temp.push_back(tempVal);
