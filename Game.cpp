@@ -260,7 +260,7 @@ void Game::storeWord(string word) {
 
 
 //Precondition: A map
-//This Function will get word from. 
+//This function will get word from.
 string Game::getWord(int length) {
     if (library[length].size() > 0) {
         string tempVect = library[length][0];
@@ -270,8 +270,10 @@ string Game::getWord(int length) {
     }
     return "";
 }
+//Postcondtion: This function will rotate and get a new word each time then pushes the word to the end of the vector.
 
 
+//Precondtion: Needs Word
 string Game::jumble(string word) {
     for (int i = 0; i < 1000; i++) {
         unsigned long storeNum = rand() % word.size();
@@ -283,7 +285,11 @@ string Game::jumble(string word) {
     }
     return word;
 }
+//Postcondition: This function will scramble the character of the word.
 
+
+//Precondition: Running Game
+//This function will save game by variable listed on to a vector.
 void Game::saveGame(int level, int score, int lifelineRem, int currentLength, string currentWord, string jumbledWord,
                     int stage, int guessRem, int numWordCorrect, string longestWord, string filePath) {
     ofstream gamefile;
@@ -303,13 +309,17 @@ void Game::saveGame(int level, int score, int lifelineRem, int currentLength, st
     gamefile.close();
 
 }
+//Postcondition: This function saves game data/status onto a text file called "Save.txt." then close it.
 
+
+//Precondition: Saved Game, if file exist.
+//This function will load the game when user resume.
 vector<string> Game::loadGame() {
     ifstream load;
     vector<string> temp;
 
-    try { //opening a file might break and catches it.
-        load.open("Save.txt"); //if file exist then some sort of game is saved in it.
+    try {
+        load.open("Save.txt");
         if (load.good()) {
             for (int i = 0; i < 11; i++) {
                 string tempVal;
@@ -325,4 +335,4 @@ vector<string> Game::loadGame() {
         return vector<string>();
     }
 }
-
+//Postcondition: Load the game if file path is empty when game is ran.
