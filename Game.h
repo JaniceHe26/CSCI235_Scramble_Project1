@@ -1,5 +1,5 @@
 //
-// Created by Janice He on 3/6/18.
+// Created on 3/6/18.
 //
 
 #ifndef WORD_SCRAMBLEPROJECT1CSC235_GAME_H
@@ -19,7 +19,7 @@ using namespace std;
 
 class Game {
 public:
-    void run(string filePath); //To start a game. User interaction will happen here
+    void run(string filePath);
     void storeWord(string word);
 
 
@@ -31,7 +31,6 @@ private:
     string getWord(int length);
     string jumble(string word);
     string wordConformance(string word);
-//    void saveFile(string Game); //make this to load file instead of save
     void saveGame(int level, int score, int lifelineRem, int currentLength, string currentWord, string jumbledWord,
                   int stage, int guessRem, int numWordCorrect, string longestWord, string filePath);
     vector<string> loadGame();

@@ -1,15 +1,20 @@
 //
 //
+/* THIS PROGRAM WILL CREATE A WORD JUMBLE GAME THAT SCRAMBLE WORD FOR USER TO GUESS IN ORDER TO PASS ON TO THE
+    NEXT LEVEL.
+*/
+
+
 #include <iostream>
 
 #include "Game.h"
-
+//ALL INCLUDE HEADERS NEEDED TO RUN THIS PROGRAM IS IN OUR Game.h FILE.
 
 using namespace std;
 
-//This function will run the game by taking in a text file and see if it is valid or not.
+//This function will run the game by taking in a text file and see if it is valid or not
 //Precondition: User must enter a correct file path as well file cannot be empty and have the right amount of word.
-void Game::run(string filePath) { //
+void Game::run(string filePath) {
     gameRunning = true;
     vector<string> loadGameValues;
     bool fileExist = false;
@@ -23,8 +28,9 @@ void Game::run(string filePath) { //
             fileExist = createLibrary(filePath);
         }
     }
+/*Postcondition: Returns nothing. The function takes in file path if invalid, then ask user to give the correct file path
+ * until the right file path is given*/
 
-//Postcondition:
 
 
 
@@ -35,9 +41,10 @@ void Game::run(string filePath) { //
     cout << "You may have an option to use a Life Line once if you are stuck on a word." << endl;
     cout << "Good luck!" << endl;
     cout << "\n\n";
+//End of explaining the rules of the game.
 
 
-//UI ish of the program:
+//Global var of the of the program to keep score/status etc.
     int level = 1;
     int score = 0;
     int lifeLineRem = 5;
@@ -45,12 +52,14 @@ void Game::run(string filePath) { //
     int currentLength = 3;
     string currentWord;
     string jumbledWord;
-    string guessedWord; //a word user will enter
+    string guessedWord; //This will be a word entered by user to use and compared to current word.
     int stage = 1;
-// This variables will help us with saving game:
+//These variables will help us with saving game:
+
     int maxLevel;
     int numWordCorrect = 0;
     string longestWord;
+
     //check if there is a saved game.
     if (loadGameValues.size() == 11) {
         level = stoi(loadGameValues[0]);
@@ -69,14 +78,17 @@ void Game::run(string filePath) { //
             cout << "\nSaved library failed to load.\n";
             return;
         }
+        //In case file deleted by user or corrupted/lost.
+
         while (getWord(currentLength) != currentWord);
     } else {
         currentWord = getWord(currentLength);
+        cout << currentWord << endl;
         jumbledWord = jumble(currentWord);
     }
 
+    //While the game is running each time this will be displayed to the user.
     while (gameRunning) {
-
         cout << "\n\n";
         cout << "WORD JUMBLE BEGIN:" << endl;
         cout << "------------------------------------------------------------------------------------------------------"
@@ -92,8 +104,10 @@ void Game::run(string filePath) { //
         cout << "Your word to unscramble:\t" << jumbledWord << endl;//put in the displayWord function here //cin>>
         cout << "Please enter the word:\t";
 
+        //User will enter their guess word here:
         cin >> guessedWord;
 
+        //If user gets the word correct every var will updated keeping score.
         if (currentWord == guessedWord) {
             cout << "Correct!" << endl;
             cout << "\n\n";
@@ -105,7 +119,7 @@ void Game::run(string filePath) { //
                 stage = 1;
                 if(currentLength == maxLength){ //last update to final print of status.
                     maxLevel = level;
-                    score = score +15;
+                    score = score +15; //+10 for each level, +5 for each word right therefore +15
                     break;
 
                 }
@@ -124,15 +138,13 @@ void Game::run(string filePath) { //
 
         } else {
             cout << "Incorrect!" << endl;
-
             numGuessRem--;
 
-            //Fix this case into like filepath. (Dont let them enter something other wise)
             if (numGuessRem == 0) {
                 if (lifeLineRem > 0) {
                     string response;
                     cout << "You ran out of chances to guess for this word. If you do not use a lifeline you will lose."
-                         << endl; //Would you like to use lifeline?
+                         << endl;
                     cout << "Would you like to use a life line?\t" "'Y' or 'y' for Yes and 'N' or 'n' for No" << endl;
                     cin >> response;
                     while (!(response == "y" || response == "Y" ||
@@ -151,16 +163,17 @@ void Game::run(string filePath) { //
                     } else if (response == "N" || response == "n") {
                         cout << "You chose to not use a life line. You lost." << endl;
                         gameRunning = false;
-                        //Game is over*******************************
+                        //Game is over
                     }
                 } else {
                     cout << "Sorry you do not have any life line left. You lost."
                          << endl; //maybe put this in the first statement
                     gameRunning = false;
-                    //Game is over*******************************
+                    //Game is over
                 }
             }
-            saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord, stage, numGuessRem, numWordCorrect, longestWord, filePath);
+            saveGame(level, score, lifeLineRem, currentLength, currentWord, jumbledWord,
+                     stage, numGuessRem, numWordCorrect, longestWord, filePath);
         }
 
         cout << "\n\n";
@@ -179,14 +192,14 @@ void Game::run(string filePath) { //
 }
 
 
-//This function will read file. Using a while loop just print out what is being read.
+//Precondition: Must have have a valid file path.
+// This function creates a library to store in the word. Takes in good file path reads in and store word into var word.
 bool Game::createLibrary(string filePath) {
     ifstream file;
     try {
         file.open(filePath);
         if (file.good()) {
-            while (!file.eof()) {//while its running till the end for every word in the file it pulls it in give it to the string
-//then conform it and store it into a storeWord
+            while (!file.eof()) {
                 string word;
                 file >> word;
                 word = wordConformance(word);
@@ -202,9 +215,13 @@ bool Game::createLibrary(string filePath) {
 
     return true;
 }
+//Postcondition: This function will store all the conformed word into library.
 
 
-//This function takes all upper cases,punctuation and forces all characters into lower case.
+
+//Precondition: Need Words
+//This function takes all upper cases and transform all characters into lower case. Using the #include <algorithm>
+//This function goes through word from beginning till ends removes punctuation.
 string Game::wordConformance(string word) {
     string result;
     remove_copy_if(word.begin(), word.end(),
@@ -214,31 +231,38 @@ string Game::wordConformance(string word) {
     transform(result.begin(), result.end(), result.begin(), ::tolower);
     return result;
 }
+//Postcondition: Function removes all punctuations and change upper to lower case and store it.
 
+
+//Precondition: Words from file.
 //This Function will store the word from file into a map of length and word. Also, check to see if word is existing.
-void Game::storeWord(string word) { //worry about length unique .use library
-    auto length = (int) word.length(); //this will give length of the word by calling a function called length on <string>
+//Check words exist by the key(if length is unique). If key exist, look through the element of vector to see if word exist.
+//If exist push word onto vector
+//Creates a new  vector if key does not exist.
+void Game::storeWord(string word) {
+    auto length = (int) word.length();
     if (length > maxLength) {
         maxLength = length;
     }
-    if (library.count(length) == 1) { //If key exist
+    if (library.count(length) == 1) {
         if (find(library[length].begin(), library[length].end(), word) ==
-            library[length].end()) { //Look through the element of vector
-            library[length].push_back(word); //then add word
+            library[length].end()) {
+            library[length].push_back(word);
         }
-    } else { //If length and word does not exist, create a new vector.
+    } else {
         vector<string> tempVect;
         tempVect.push_back(word);
         library[length] = tempVect;
     }
 }
+//Postcondtion: A map is created to store word.
 
 
-//This Function will take the word from the text file -getWord();
+
+//Precondition: A map
+//This Function will get word from. 
 string Game::getWord(int length) {
-//    return library[length][rand()%library[length].size()]; //Generate random number from the size of the vector
-    //rotating vector's value
-    if (library.count(length) == 1) {
+    if (library[length].size() > 0) {
         string tempVect = library[length][0];
         library[length].erase(library[length].begin());
         library[length].push_back(tempVect);
@@ -250,13 +274,13 @@ string Game::getWord(int length) {
 
 string Game::jumble(string word) {
     for (int i = 0; i < 1000; i++) {
-        int storeNum = rand() % word.size();
-        int storeNum1 = rand() % word.size();
+        unsigned long storeNum = rand() % word.size();
+        unsigned long storeNum1 = rand() % word.size();
         char letter = word[storeNum];
         char letter1 = word[storeNum1];
         word[storeNum] = letter1;
         word[storeNum1] = letter;
-    } //need a while saying if jumble word is same rejumble
+    }
     return word;
 }
 
@@ -290,6 +314,7 @@ vector<string> Game::loadGame() {
             for (int i = 0; i < 11; i++) {
                 string tempVal;
                 load >> tempVal;
+                cout << tempVal;
                 temp.push_back(tempVal);
             }
             return temp;
